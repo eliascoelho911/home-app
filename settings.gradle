@@ -12,6 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Home"
+rootProject.name = "home-app"
 include ':app'
 include ':ds'
