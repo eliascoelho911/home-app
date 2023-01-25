@@ -9,6 +9,7 @@ android {
 
 dependencies {
     implementation Libs.androidCoreKtx
+    implementation Libs.composeConstraintLayout
 
-    implementation LocalLibs.ds
+    implementation project(LocalLibs.ds)
 }

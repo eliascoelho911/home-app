@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
-    implementation Libs.composeMaterial3
+    api Libs.composeMaterial3
+
     implementation Libs.androidCoreKtx
 }

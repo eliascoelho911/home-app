@@ -6,6 +6,7 @@ object Versions {
     const val composeUi = "1.3.3"
     const val composeCompiler = "1.3.2"
     const val composeMaterial3 = "1.0.1"
+    const val composeConstraintLayout = "1.0.1"
     const val activityCompose = "1.6.1"
 
     // Android
