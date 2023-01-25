@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
-apply from: "$rootDir/plugins/android.gradle"
+apply from: "$rootDir/plugins/compose.gradle"
 
 android {
-    namespace "com.notate"
+    namespace "com.eliascoelho911.homeapp"
 
     defaultConfig {
-        applicationId "com.notate"
+        applicationId "com.eliascoelho911.homeapp"
         versionCode 1
         versionName "1.0"
     }
@@ -18,22 +18,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-    buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion Versions.composeCompiler
-    }
 }
 
 dependencies {
-    implementation Libs.coreKtx
+    implementation Libs.androidCoreKtx
     implementation Libs.lifecycleRuntimeKtx
     implementation Libs.activityCompose
-    implementation Libs.composeUi
-    implementation Libs.composeUiToolingPreview
-    implementation Libs.composeMaterial3
-    debugImplementation Libs.composeUiTooling
+
+    implementation project(LocalLibs.ds)
 }

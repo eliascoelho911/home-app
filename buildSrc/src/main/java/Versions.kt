@@ -1,12 +1,12 @@
 object Versions {
     // Kotlin
-    const val kotlin = "1.7.10"
+    const val kotlin = "1.7.20"
 
     // Compose
-    const val compose = "1.2.1"
-    const val composeCompiler = "1.3.0"
-    const val composeMaterial3 = "1.0.0-beta03"
-    const val activityCompose = "1.6.0"
+    const val composeUi = "1.3.3"
+    const val composeCompiler = "1.3.2"
+    const val composeMaterial3 = "1.0.1"
+    const val activityCompose = "1.6.1"
 
     // Android
     const val androidCoreKtx = "1.9.0"

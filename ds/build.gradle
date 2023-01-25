@@ -1,0 +1,13 @@
+apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+
+apply from: "$rootDir/plugins/compose.gradle"
+
+android {
+    namespace "com.eliascoelho911.homeapp.ds"
+}
+
+dependencies {
+    implementation Libs.composeMaterial3
+    implementation Libs.androidCoreKtx
+}

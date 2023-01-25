@@ -1,0 +1,44 @@
+apply from: "$rootDir/plugins/unit-test.gradle"
+
+android {
+    compileSdk Config.compileSdk
+
+    defaultConfig {
+        minSdk Config.minSdk
+        targetSdk Config.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility Config.javaVersion
+        targetCompatibility Config.javaVersion
+    }
+
+    kotlinOptions {
+        jvmTarget = Config.jvmJavaVersion
+    }
+
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Versions.composeCompiler
+    }
+}
+
+dependencies {
+    implementation Libs.composeUi
+    implementation Libs.composeUiToolingPreview
+    debugImplementation Libs.composeUiTooling
+}
