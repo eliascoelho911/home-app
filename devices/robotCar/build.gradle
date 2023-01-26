@@ -10,6 +10,9 @@ android {
 dependencies {
     implementation Libs.androidCoreKtx
     implementation Libs.composeConstraintLayout
+    implementation Libs.koinCompose
+    implementation Libs.composeRuntime
+    implementation Libs.accompanistPermissions
 
     implementation project(LocalLibs.ds)
 }

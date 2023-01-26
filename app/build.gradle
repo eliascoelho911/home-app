@@ -24,6 +24,7 @@ dependencies {
     implementation Libs.androidCoreKtx
     implementation Libs.lifecycleRuntimeKtx
     implementation Libs.activityCompose
+    implementation Libs.koinCompose
 
     implementation project(LocalLibs.ds)
 }

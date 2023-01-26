@@ -5,9 +5,11 @@ object Versions {
     // Compose
     const val composeUi = "1.3.3"
     const val composeCompiler = "1.3.2"
+    const val composeRuntime = "1.3.3"
     const val composeMaterial3 = "1.0.1"
     const val composeConstraintLayout = "1.0.1"
     const val activityCompose = "1.6.1"
+    const val accompanistPermissions = "0.29.0-alpha"
 
     // Android
     const val androidCoreKtx = "1.9.0"
@@ -19,4 +21,8 @@ object Versions {
 
     // Gradle
     const val gradle = "7.3.0"
+
+    // Koin
+    const val koin = "3.3.2"
+    const val koinCompose = "3.4.1"
 }

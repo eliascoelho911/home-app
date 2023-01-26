@@ -1,9 +1,9 @@
-package com.eliascoelho911.homeapp.robotcar.ui
+package com.eliascoelho911.homeapp.robotcar.presentation
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 
-data class RobotCarScreenState(
+data class RobotCarState(
     val information: Information = Information(),
     val control: Control
 ) {
@@ -19,9 +19,7 @@ data class RobotCarScreenState(
     )
 
     data class Control(
-        val valueLeft: Float,
-        val valueRight: Float,
-        val onValueLeftChanged: (Float) -> Unit,
-        val onValueRightChanged: (Float) -> Unit
+        val leftValue: Float,
+        val rightValue: Float
     )
 }
