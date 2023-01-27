@@ -27,4 +27,5 @@ dependencies {
     implementation Libs.koinCompose
 
     implementation project(LocalLibs.ds)
+    implementation project(LocalLibs.deviceRobotCar)
 }
