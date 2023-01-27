@@ -11,15 +11,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eliascoelho911.homeapp.robotcar.data.RobotCarConstants
 import com.eliascoelho911.homeapp.robotcar.domain.model.Speed
-import com.eliascoelho911.homeapp.robotcar.domain.usecase.ChangeSpeedUseCase
+import com.eliascoelho911.homeapp.robotcar.domain.usecase.UpdateSpeedUseCase
 import java.util.UUID
 import kotlinx.coroutines.launch
 
 internal class RobotCarViewModel(
-    private val changeSpeedUseCase: ChangeSpeedUseCase,
+    private val updateSpeedUseCase: UpdateSpeedUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableLiveData<RobotCarState>()
+    private val _state = MutableLiveData(initialState)
 
     val state: LiveData<RobotCarState> get() = _state
 
@@ -28,18 +28,18 @@ internal class RobotCarViewModel(
     val actions: LiveData<RobotCarAction> get() = _actions
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    fun onLeftWheelVelocityChanged(context: Context, speed: Speed) {
-        viewModelScope.launch {
-            updateControlLeftValue(context, speed)
-        }
+    fun onLeftWheelSpeedChanged(context: Context, speed: Speed) {
+        updateControlLeftValue(context, speed)
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    private suspend fun updateControlLeftValue(context: Context, leftValue: Float) {
-        changeSpeedUseCase.updateLeftWheelSpeed(
-            speed = leftValue,
-            bluetoothSocket = getOrCreateBluetoothSocket(context)
-        )
+    private fun updateControlLeftValue(context: Context, leftValue: Float) {
+        viewModelScope.launch {
+            updateSpeedUseCase.updateLeftWheelSpeed(
+                speed = leftValue,
+                bluetoothSocket = getOrCreateBluetoothSocket(context)
+            )
+        }
 
         setState {
             it.copy(
@@ -49,18 +49,18 @@ internal class RobotCarViewModel(
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    fun onRightWheelVelocityChanged(context: Context, speed: Speed) {
-        viewModelScope.launch {
-            updateControlRightValue(context, speed)
-        }
+    fun onRightWheelSpeedChanged(context: Context, speed: Speed) {
+        updateControlRightValue(context, speed)
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    private suspend fun updateControlRightValue(context: Context, rightValue: Float) {
-        changeSpeedUseCase.updateRightWheelVelocity(
-            speed = rightValue,
-            bluetoothSocket = getOrCreateBluetoothSocket(context)
-        )
+    private fun updateControlRightValue(context: Context, rightValue: Float) {
+        viewModelScope.launch {
+            updateSpeedUseCase.updateRightWheelVelocity(
+                speed = rightValue,
+                bluetoothSocket = getOrCreateBluetoothSocket(context)
+            )
+        }
 
         setState {
             it.copy(
@@ -69,7 +69,7 @@ internal class RobotCarViewModel(
         }
     }
 
-    fun onRequestPermission(permission: String) {
+    fun requestPermission(permission: String) {
         sendAction(RobotCarAction.RequestPermission(permission))
     }
 

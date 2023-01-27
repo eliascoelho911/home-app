@@ -3,6 +3,7 @@ package com.eliascoelho911.homeapp.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.eliascoelho911.homeapp.ds.theme.HomeAppTheme
 import com.eliascoelho911.homeapp.robotcar.presentation.RobotCarScreen
 
 internal class StartedActivity : ComponentActivity() {
@@ -10,7 +11,9 @@ internal class StartedActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            RobotCarScreen()
+            HomeAppTheme(useDarkTheme = false) {
+                RobotCarScreen()
+            }
         }
     }
 }

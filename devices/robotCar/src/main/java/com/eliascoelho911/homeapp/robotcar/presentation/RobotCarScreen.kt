@@ -49,9 +49,10 @@ import com.eliascoelho911.homeapp.ds.R as DS
 @SuppressLint("MissingPermission")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
+// TODO Melhorar performance
 fun RobotCarScreen() {
     val viewModel: RobotCarViewModel = koinViewModel()
-    val state by viewModel.state.observeAsState(initial = initialState())
+    val state by viewModel.state.observeAsState(initial = initialState)
     val context = LocalContext.current
     val btConnectPermissionState = rememberPermissionState(permission = BLUETOOTH_CONNECT)
 
@@ -62,16 +63,16 @@ fun RobotCarScreen() {
         onClickNavigationIcon = {},
         onValueLeftChanged = {
             if (btConnectPermissionState.status.isGranted) {
-                viewModel.onLeftWheelVelocityChanged(context, it)
+                viewModel.onLeftWheelSpeedChanged(context, it)
             } else {
-                viewModel.onRequestPermission(BLUETOOTH_CONNECT)
+                viewModel.requestPermission(BLUETOOTH_CONNECT)
             }
         },
         onValueRightChanged = {
             if (btConnectPermissionState.status.isGranted) {
-                viewModel.onRightWheelVelocityChanged(context, it)
+                viewModel.onRightWheelSpeedChanged(context, it)
             } else {
-                viewModel.onRequestPermission(BLUETOOTH_CONNECT)
+                viewModel.requestPermission(BLUETOOTH_CONNECT)
             }
         }
     )
@@ -97,13 +98,6 @@ private fun ActionHandler(
 }
 
 @Composable
-private fun initialState() = RobotCarState(
-    control = RobotCarState.Control(
-        leftValue = 0.5f, rightValue = 0.5f
-    )
-)
-
-@Composable
 private fun RobotCarScreenContent(
     state: RobotCarState,
     onClickNavigationIcon: () -> Unit,
@@ -117,7 +111,7 @@ private fun RobotCarScreenContent(
             modifier = Modifier
                 .padding(internalPadding)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceAround
         ) {
             Information(information = state.information)
             Control(
@@ -148,13 +142,13 @@ private fun Information(
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = information.name,
+            text = stringResource(information.nameRes),
             style = MaterialTheme.typography.displayMedium,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center
         )
-        information.connection?.let { connection ->
+        information.connectionDescriptionRes?.let { connectionDescriptionRes ->
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -163,16 +157,16 @@ private fun Information(
             ) {
                 Icon(
                     modifier = Modifier.size(20.dp),
-                    painter = connection.icon,
+                    painter = painterResource(id = DS.drawable.ic_connection),
                     contentDescription = null,
-                    tint = connection.color
+                    tint = MaterialTheme.colorScheme.secondary
                 )
                 Text(
                     modifier = Modifier.padding(start = 8.dp),
-                    text = connection.description,
+                    text = stringResource(id = connectionDescriptionRes),
                     style = MaterialTheme.typography.labelMedium,
                     textAlign = TextAlign.Center,
-                    color = connection.color
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
         }
@@ -188,7 +182,7 @@ private fun Control(
     VerticalControl(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 56.dp, end = 56.dp, bottom = 96.dp)
+            .padding(start = 56.dp, end = 56.dp)
             .height(300.dp),
         valueLeft = state.control.leftValue,
         valueRight = state.control.rightValue,
@@ -209,12 +203,8 @@ private fun ScreenPreview() {
         RobotCarScreenContent(
             state = RobotCarState(
                 information = RobotCarState.Information(
-                    name = "Carrinho robô",
-                    connection = RobotCarState.Connection(
-                        color = MaterialTheme.colorScheme.secondary,
-                        icon = painterResource(id = DS.drawable.ic_connection),
-                        description = stringResource(id = R.string.connected_label)
-                    )
+                    nameRes = R.string.device_name,
+                    connectionDescriptionRes = R.string.connected_label
                 ),
                 control = RobotCarState.Control(
                     leftValue = valueLeft,

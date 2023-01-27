@@ -1,21 +1,25 @@
 package com.eliascoelho911.homeapp.robotcar.presentation
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.annotation.StringRes
+import com.eliascoelho911.homeapp.robotcar.R
+
+internal val initialState = RobotCarState(
+    information = RobotCarState.Information(
+        nameRes = R.string.device_name,
+        connectionDescriptionRes = R.string.connected_label
+    ),
+    control = RobotCarState.Control(
+        leftValue = 0.5f, rightValue = 0.5f
+    )
+)
 
 data class RobotCarState(
-    val information: Information = Information(),
+    val information: Information,
     val control: Control
 ) {
     data class Information(
-        val name: String = "",
-        val connection: Connection? = null
-    )
-
-    data class Connection(
-        val color: Color,
-        val icon: Painter,
-        val description: String
+        @StringRes val nameRes: Int,
+        @StringRes val connectionDescriptionRes: Int? = null
     )
 
     data class Control(

@@ -5,7 +5,7 @@ import com.eliascoelho911.homeapp.robotcar.domain.model.Speed
 import com.eliascoelho911.homeapp.robotcar.domain.model.Speed2
 import com.eliascoelho911.homeapp.robotcar.domain.repository.RobotCarRepository
 
-internal class ChangeSpeedUseCase(
+internal class UpdateSpeedUseCase(
     private val repository: RobotCarRepository
 ) {
     suspend fun updateSpeed(bluetoothSocket: BluetoothSocket, speed: Speed2) {
