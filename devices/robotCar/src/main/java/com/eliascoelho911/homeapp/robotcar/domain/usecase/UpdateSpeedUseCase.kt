@@ -1,22 +1,38 @@
 package com.eliascoelho911.homeapp.robotcar.domain.usecase
 
-import android.bluetooth.BluetoothSocket
 import com.eliascoelho911.homeapp.robotcar.domain.model.Speed
-import com.eliascoelho911.homeapp.robotcar.domain.model.Speed2
 import com.eliascoelho911.homeapp.robotcar.domain.repository.RobotCarRepository
+
+private const val FORWARD = 1f
+
+private const val BACKWARD = 1f
+
+private const val ZERO = 1f
 
 internal class UpdateSpeedUseCase(
     private val repository: RobotCarRepository
 ) {
-    suspend fun updateSpeed(bluetoothSocket: BluetoothSocket, speed: Speed2) {
-        repository.updateSpeed(bluetoothSocket, speed)
+    suspend fun forward() {
+        sendSpeed(leftWheel = FORWARD, rightWheel = FORWARD)
     }
 
-    suspend fun updateLeftWheelSpeed(bluetoothSocket: BluetoothSocket, speed: Speed) {
-        repository.updateLeftWheelSpeed(bluetoothSocket, speed)
+    suspend fun left() {
+        sendSpeed(rightWheel = ZERO)
     }
 
-    suspend fun updateRightWheelVelocity(bluetoothSocket: BluetoothSocket, speed: Speed) {
-        repository.updateRightWheelVelocity(bluetoothSocket, speed)
+    suspend fun right() {
+        sendSpeed(leftWheel = FORWARD)
+    }
+
+    suspend fun backward() {
+        sendSpeed(leftWheel = BACKWARD, rightWheel = BACKWARD)
+    }
+
+    suspend fun stop() {
+        sendSpeed(leftWheel = ZERO, rightWheel = ZERO)
+    }
+
+    private suspend fun sendSpeed(leftWheel: Speed? = null, rightWheel: Speed? = null) {
+        repository.send(leftWheel, rightWheel)
     }
 }

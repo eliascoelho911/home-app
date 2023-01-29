@@ -1,59 +1,51 @@
 package com.eliascoelho911.homeapp.robotcar.data.repository
 
 import android.Manifest
-import android.bluetooth.BluetoothSocket
 import androidx.annotation.RequiresPermission
+import com.eliascoelho911.homeapp.robotcar.data.service.BluetoothClientService
 import com.eliascoelho911.homeapp.robotcar.domain.model.Speed
-import com.eliascoelho911.homeapp.robotcar.domain.model.Speed2
 import com.eliascoelho911.homeapp.robotcar.domain.repository.RobotCarRepository
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
+
+private const val RETRY_DELAY = 1000L
+
+private const val TIMEOUT = 1000L
+
+private const val ATTEMPTS = 3
 
 internal class RobotCarBluetoothRepositoryImpl(
-    private val dispatcher: CoroutineDispatcher
+    private val bluetoothService: BluetoothClientService
 ) : RobotCarRepository {
 
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    override suspend fun updateSpeed(bluetoothSocket: BluetoothSocket, speed: Speed2) {
-        send(bluetoothSocket, bytes = speed.toSpeedInt())
-    }
+    private var attemptsCount = 0
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    override suspend fun updateLeftWheelSpeed(bluetoothSocket: BluetoothSocket, speed: Speed) {
-        send(bluetoothSocket, speed)
-    }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    override suspend fun updateRightWheelVelocity(bluetoothSocket: BluetoothSocket, speed: Speed) {
-        send(bluetoothSocket, speed)
-    }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    private suspend fun send(socket: BluetoothSocket, speed: Speed) {
-        send(socket, bytes = speed.toSpeedInt())
-    }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    private suspend fun send(socket: BluetoothSocket, bytes: Int) {
-        withContext(dispatcher) {
+    override suspend fun connect() {
+        withTimeout(TIMEOUT) {
             runCatching {
-                socket.connect()
-                socket.outputStream
-            }.onSuccess { outStream ->
-                outStream.write(bytes)
+                bluetoothService.connect()
+            }.onFailure {
+                connectRetry(it)
+            }.onSuccess {
+                return@withTimeout
             }
         }
+        connectRetry()
     }
-}
 
-private fun Speed2.toSpeedInt(): Int {
-    return "${leftWheel.toSpeedInt()}${rightWheel.toSpeedInt()}".toInt()
-}
+    override suspend fun send(leftWheel: Speed?, rightWheel: Speed?) {
+        bluetoothService.sendSpeed(leftWheel = leftWheel, rightWheel = rightWheel)
+    }
 
-private fun Speed.toSpeedInt(): Int {
-    return when {
-        this < 0.5f -> 1
-        this == 0.5f -> 2
-        else -> 3
+    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+    private suspend fun connectRetry(throwable: Throwable? = null) {
+        if (attemptsCount < ATTEMPTS) {
+            delay(RETRY_DELAY)
+            attemptsCount++
+            connect()
+        } else {
+            throwable?.let { throw it }
+        }
     }
 }
