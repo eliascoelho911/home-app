@@ -10,9 +10,8 @@ import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-private const val INITIAL_SPEED = 0.5f
+private const val INITIAL_SPEED = 0
 
-//TODO Melhorar código
 class BluetoothClientService(
     private val deviceManager: BluetoothDeviceManager,
     private val uuid: UUID
@@ -52,8 +51,13 @@ class BluetoothClientService(
     suspend fun sendSpeed(leftWheel: Speed?, rightWheel: Speed?) {
         val leftWheelFinal = leftWheel ?: currentLeftWheelSpeed
         val rightWheelFinal = rightWheel ?: currentRightWheelSpeed
+
         write(leftWheelFinal.toByteArray())
+        currentLeftWheelSpeed = leftWheelFinal
+
         write(rightWheelFinal.toByteArray())
+        currentRightWheelSpeed = rightWheelFinal
+
         flush()
     }
 
@@ -63,9 +67,9 @@ class BluetoothClientService(
                 runCatching {
                     socket?.outputStream?.write(byteArray)
                 }.onSuccess {
-                    log("Writing $byteArray to ${socket?.remoteDevice?.address}")
+                    log("Writing ${byteArray.decodeToString()} to ${socket?.remoteDevice?.address}")
                 }.onFailure {
-                    log("Error on try write $byteArray to ${socket?.remoteDevice?.address}")
+                    log("Error on try write ${byteArray.decodeToString()} to ${socket?.remoteDevice?.address}")
                     close()
                     throw it
                 }
@@ -91,4 +95,4 @@ class BluetoothClientService(
     }
 }
 
-private fun Speed.toByteArray() = "%.2f".format(this).encodeToByteArray()
+private fun Speed.toByteArray() = toString().encodeToByteArray()

@@ -3,11 +3,11 @@ package com.eliascoelho911.homeapp.robotcar.domain.usecase
 import com.eliascoelho911.homeapp.robotcar.domain.model.Speed
 import com.eliascoelho911.homeapp.robotcar.domain.repository.RobotCarRepository
 
-private const val FORWARD = 1f
+private const val FORWARD = 1
 
-private const val BACKWARD = 1f
+private const val BACKWARD = -1
 
-private const val ZERO = 1f
+private const val ZERO = 0
 
 internal class UpdateSpeedUseCase(
     private val repository: RobotCarRepository
@@ -17,11 +17,11 @@ internal class UpdateSpeedUseCase(
     }
 
     suspend fun left() {
-        sendSpeed(rightWheel = ZERO)
+        sendSpeed(leftWheel = ZERO)
     }
 
     suspend fun right() {
-        sendSpeed(leftWheel = FORWARD)
+        sendSpeed(rightWheel = ZERO)
     }
 
     suspend fun backward() {

@@ -263,7 +263,8 @@ private fun ScreenPreview() {
             onClickRight = {},
             onClickForward = {},
             onClickBackward = {},
-            onClickStop = {}
-        ) { /*TODO*/ }
+            onClickStop = {},
+            onClickRefresh = {}
+        )
     }
 }
