@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eliascoelho911.homeapp.robotcar.R
 import com.eliascoelho911.homeapp.robotcar.domain.usecase.ConnectWithRobotUseCase
 import com.eliascoelho911.homeapp.robotcar.domain.usecase.UpdateSpeedUseCase
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -32,26 +31,12 @@ internal class RobotCarViewModel(
     private fun onConnectWithRobot() {
         viewModelScope.launch {
             runCatching {
-                setInformationState {
-                    it.copy(
-                        showRefresh = false,
-                        connectionDescriptionRes = R.string.connecting_label
-                    )
-                }
+                setState { it.connectingState }
                 connectWithRobotUseCase()
             }.onFailure {
-                setInformationState {
-                    it.copy(
-                        connectionDescriptionRes = R.string.disconnected_label,
-                        showRefresh = true
-                    )
-                }
+                setState { it.disconnectedState }
             }.onSuccess {
-                setInformationState {
-                    it.copy(
-                        connectionDescriptionRes = R.string.connected_label
-                    )
-                }
+                setState { it.connectedState }
             }
         }
     }
@@ -151,16 +136,6 @@ internal class RobotCarViewModel(
 
     private fun sendAction(action: RobotCarAction) {
         _actions.value = action
-    }
-
-    private fun setInformationState(
-        informationState: (currentState: RobotCarState.Information) -> RobotCarState.Information
-    ) {
-        setState {
-            it.copy(
-                information = informationState(it.information)
-            )
-        }
     }
 
     private fun setState(state: (currentState: RobotCarState) -> RobotCarState) {
