@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.eliascoelho911.homeapp.robotcar.ui
+package com.eliascoelho911.homeapp.robotcar.presentation
 
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +50,7 @@ import com.eliascoelho911.homeapp.ds.R as DS
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RobotCarScreen() {
-    val viewModel: RobotCarViewModel = koinViewModel()
+    val viewModel: RobotViewModel = koinViewModel()
     val state by viewModel.state.observeAsState(initial = initialState)
     val btConnectPermissionState = rememberPermissionState(permission = BLUETOOTH_CONNECT)
 
@@ -83,7 +83,7 @@ fun RobotCarScreen() {
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun ActionHandler(
-    viewModel: RobotCarViewModel,
+    viewModel: RobotViewModel,
     btConnectPermissionState: PermissionState
 ) {
     val owner = LocalLifecycleOwner.current
@@ -91,7 +91,7 @@ private fun ActionHandler(
     SideEffect {
         viewModel.actions.observe(owner) {
             when (it) {
-                is RobotCarAction.RequestPermission -> {
+                is RobotAction.RequestPermission -> {
                     btConnectPermissionState.launchPermissionRequest()
                 }
             }

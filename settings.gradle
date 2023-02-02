@@ -16,3 +16,4 @@ rootProject.name = "home-app"
 include ':app'
 include ':ds'
 include ':devices:robotCar'
+include ':commons'

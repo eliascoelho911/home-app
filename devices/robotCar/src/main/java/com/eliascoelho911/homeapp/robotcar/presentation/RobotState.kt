@@ -1,4 +1,4 @@
-package com.eliascoelho911.homeapp.robotcar.ui
+package com.eliascoelho911.homeapp.robotcar.presentation
 
 import androidx.annotation.StringRes
 import com.eliascoelho911.homeapp.robotcar.R

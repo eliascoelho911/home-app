@@ -3,22 +3,24 @@ package com.eliascoelho911.homeapp.robotcar.di
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import com.eliascoelho911.homeapp.robotcar.data.repository.RobotCarBluetoothRepositoryImpl
-import com.eliascoelho911.homeapp.robotcar.data.service.BluetoothClientService
-import com.eliascoelho911.homeapp.robotcar.domain.repository.RobotCarRepository
+import com.eliascoelho911.homeapp.commons.service.BluetoothClientService
+import com.eliascoelho911.homeapp.robotcar.data.cache.RobotLocalStorage
+import com.eliascoelho911.homeapp.robotcar.data.repository.RobotBluetoothRepositoryImpl
+import com.eliascoelho911.homeapp.robotcar.data.service.RobotBluetoothService
+import com.eliascoelho911.homeapp.robotcar.domain.repository.RobotRepository
 import com.eliascoelho911.homeapp.robotcar.domain.usecase.ConnectWithRobotUseCase
-import com.eliascoelho911.homeapp.robotcar.domain.usecase.UpdateSpeedUseCase
+import com.eliascoelho911.homeapp.robotcar.domain.usecase.UpdateRobotUseCase
 import com.eliascoelho911.homeapp.robotcar.infrastructure.BluetoothDeviceManager
 import com.eliascoelho911.homeapp.robotcar.infrastructure.Constants
-import com.eliascoelho911.homeapp.robotcar.ui.RobotCarViewModel
+import com.eliascoelho911.homeapp.robotcar.presentation.RobotViewModel
 import java.util.UUID
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val RobotCarModule = module {
     viewModel {
-        RobotCarViewModel(
-            updateSpeedUseCase = UpdateSpeedUseCase(
+        RobotViewModel(
+            updateRobotUseCase = UpdateRobotUseCase(
                 repository = get()
             ),
             connectWithRobotUseCase = ConnectWithRobotUseCase(
@@ -27,20 +29,25 @@ val RobotCarModule = module {
         )
     }
 
-    factory<RobotCarRepository> {
-        RobotCarBluetoothRepositoryImpl(
-            bluetoothService = get()
+    factory<RobotRepository> {
+        RobotBluetoothRepositoryImpl(
+            robotBluetoothService = RobotBluetoothService(
+                bluetoothClientService = get(),
+                bluetoothDeviceManager = get()
+            ),
+            robotLocalStorage = get()
         )
     }
 
     single {
         BluetoothClientService(
-            deviceManager = get(),
             uuid = UUID.fromString(Constants.UUID)
         )
     }
 
-    single(createdAtStart = true) { BluetoothDeviceManager(getBluetoothAdapter(get())) }
+    single { RobotLocalStorage() }
+
+    single { BluetoothDeviceManager(getBluetoothAdapter(get())) }
 }
 
 private fun getBluetoothAdapter(context: Context): BluetoothAdapter {

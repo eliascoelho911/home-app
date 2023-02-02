@@ -15,4 +15,5 @@ dependencies {
     implementation Libs.accompanistPermissions
 
     implementation project(LocalLibs.ds)
+    implementation project(LocalLibs.commons)
 }
